@@ -3,7 +3,7 @@ esri-hackaton
 
 This is a repository for my application to ESRI
 
-TODO center in Dublin
+DONE center in Dublin
 TODO import + display layer
 TODO import + display marker
 TODO more interactivity
