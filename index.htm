@@ -10,38 +10,55 @@
 </head>
 <body>
 	<div id="map" ></div>
+	<div id="images"></div>
 	<script src="./libs/jquery-1.11.1.min.js"></script>
 	<script src="./libs/leaflet-0.7.2/leaflet.js"></script>
 	<script src="./libs/esri-leaflet/esri-leaflet.js"></script>
 	<script>
 		//initialize variables
 		var center = [41.9000, 12.5000];
-		var map_url = 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/';//url must end with /
+		var map_url = 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}';
 		var map_attribution = '  Sources: Esri, HERE, DeLorme, TomTom, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, MapmyIndia, © OpenStreetMap contributors, and the GIS User Community ';
-		//set center in Rome
+		var heritage_layer = 'http://services.arcgis.com/RhGiohBHzSBKt1MS/arcgis/rest/services/World_Heritage_Sites/FeatureServer/0';
+		var popup_template = '<h3>{name_en}</h3><p>{short_description_en}<br/><a href="javascript:viewphoto({latitude},{longitude},\'{name_en}\');">View photos</a></p>';
+		var flickr_url = 'http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?';
+		
+		//set center 
 		var map = L.map('map').setView(center, 10);
 		
 		//add topographic map
-		L.tileLayer(map_url+'MapServer/tile/{z}/{y}/{x}', {
+		L.tileLayer(map_url, {
 			attribution: map_attribution,
 			minZoom: 3
 		}).addTo(map);
 		
 		//add heritage sites
-		var template = "<h3>{name_en}</h3><p>{short_description_en}<br/><a href=\"javascript:viewphoto({latitude},{longitude});\">View photos</a></p>";
-
-		L.esri.featureLayer("http://services.arcgis.com/RhGiohBHzSBKt1MS/arcgis/rest/services/World_Heritage_Sites/FeatureServer/0", {
-       		style: function (feature) {
-          		return { color: "#70ca49", weight: 2 };
-        	},
+		L.esri.featureLayer(heritage_layer, {
         	onEachFeature: function (feature, layer) {
-          		layer.bindPopup(L.Util.template(template, feature.properties));
-          		console.log(uneval(feature.properties));
+          		layer.bindPopup(L.Util.template(popup_template, feature.properties));
+          		console.log(feature.properties);
         	}
       	}).addTo(map);
       	
-      	function viewphoto (latitude, longitude){
-      		console.log(latitude+ " "+longitude);
+      	//load and show photos
+      	function viewphoto (latitude, longitude, name){
+      		
+      		$("#images").empty();
+      		$.getJSON(flickr_url , {
+				format: "json",
+				tags: name,
+				tagmode: "any",
+			}).done(function( data ) {
+				
+				$.each( data.items, function( i, item ) {
+					console.log('img' + uneval(item));
+					$( "<img>" ).attr( "src", item.media.m ).appendTo( "#images" );
+					if ( i === 3 ) {
+						return false;
+					}
+			});
+		});
+      		
       	}
 	</script>
 </body>
