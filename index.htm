@@ -14,13 +14,14 @@
 	<script src="./libs/jquery-1.11.1.min.js"></script>
 	<script src="./libs/leaflet-0.7.2/leaflet.js"></script>
 	<script src="./libs/esri-leaflet/esri-leaflet.js"></script>
+	
 	<script>
 		//initialize variables
-		var center = [41.9000, 12.5000];
+		var center = [55.000, -6.5000];
 		var map_url = 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}';
 		var map_attribution = '  Sources: Esri, HERE, DeLorme, TomTom, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, MapmyIndia, © OpenStreetMap contributors, and the GIS User Community ';
 		var heritage_layer = 'http://services.arcgis.com/RhGiohBHzSBKt1MS/arcgis/rest/services/World_Heritage_Sites/FeatureServer/0';
-		var popup_template = '<h3>{name_en}</h3><p>{short_description_en}<br/><a href="javascript:viewphoto({latitude},{longitude},\'{name_en}\');">View photos</a></p>';
+		var popup_template = '<h3>{name_en}</h3><p>{short_description_en}<br/><a href="javascript:viewphoto({latitude},{longitude},\'{name_search}\');">View photos</a></p>';
 		var flickr_url = 'http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?';
 		
 		//set center 
@@ -35,8 +36,14 @@
 		//add heritage sites
 		L.esri.featureLayer(heritage_layer, {
         	onEachFeature: function (feature, layer) {
+        		//replacing apostrophe to prevent syntax error in viewphoto 
+        		feature.properties.name_search = feature.properties.name_en.replace("'"," ");
+        		//TODO replacing name encoding
+        		feature.properties.name_en = (feature.properties.name_en);
+        		
+        		console.log(feature.properties.name_search);
           		layer.bindPopup(L.Util.template(popup_template, feature.properties));
-          		console.log(feature.properties);
+          		
         	}
       	}).addTo(map);
       	
