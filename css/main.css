@@ -1,11 +1,17 @@
 #header{
 	width:100%;
+	position:fixed;
+	top:0;
+}
+h1{
+	font-size: 100%;
+	line-height: 100%;
 }
 #map{
 	width: 75%;
-	float:left;
+	position: fixed;
 }
 #images{
 	width: 25%;
-	float:left;
+	float:right;
 }
