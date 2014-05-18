@@ -7,12 +7,12 @@ Installation:
 Go to the private folder and change the key.js file adding your Flikr API key.
 		
 Known bugs:
-The heritage layer contains some encoding errors that are displayed.
+- The heritage layer contains some encoding errors that are displayed.
+- Sometimes some pins disappears (expecially in Ireland/UK)
 
 
-TODO start in my location
 TODO more layout
-	- show photo area on map
+	- add loading
 	- pin style (based on tag)
 TODO more interactivity
 	- seachbox
