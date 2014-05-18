@@ -14,7 +14,7 @@ function pagestyle(){
 	   	$('#images').css({
 	   		 "width": $(window).width(), 
 	   		 "height": $(window).height() * 0.45, 
-	   		 "top": $(window).height() * 0.05 
+	   		 "margin-top": $(window).height() * 0.05
 	   	});
 	   		
 	}else{
@@ -25,7 +25,7 @@ function pagestyle(){
 	   		
 	   	$('#images').css({
 	   		 "height": $(window).height() * 0.95, 
-	   		 "top": $(window).height() * 0.05 
+	   		 "margin-top": $(window).height() * 0.05 
 	   	});
 	   	
 	}
