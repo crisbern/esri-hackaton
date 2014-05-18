@@ -12,7 +12,6 @@ Known bugs:
 
 TODO more layout
 	- add loading
-	- error message if none
 	- pin style (based on tag)
 TODO more interactivity
 	- seachbox
