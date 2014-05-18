@@ -10,9 +10,9 @@ Known bugs:
 - The heritage layer contains some encoding errors that are displayed.
 - Sometimes some pins disappears (expecially in Ireland/UK)
 
-
 TODO more layout
 	- add loading
+	- error message if none
 	- pin style (based on tag)
 TODO more interactivity
 	- seachbox
