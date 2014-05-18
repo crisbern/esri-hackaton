@@ -1,4 +1,11 @@
-#map, #images{
-	width: 1500px;
-	height: 800px;
+#header{
+	width:100%;
+}
+#map{
+	width: 75%;
+	float:left;
+}
+#images{
+	width: 25%;
+	float:left;
 }

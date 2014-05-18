@@ -9,12 +9,14 @@
 	 <link rel="stylesheet" href="./css/main.css" />
 </head>
 <body>
-	<div id="map" ></div>
+	<div id="header"><h1>ESRI Hackaton</h1></div>
+	<div id="map"></div>
 	<div id="images"></div>
 	<script src="./libs/jquery-1.11.1.min.js"></script>
 	<script src="./libs/leaflet-0.7.2/leaflet.js"></script>
 	<script src="./libs/esri-leaflet/esri-leaflet.js"></script>
-	
+	<script src="./css/style.js"></script>
+	<script src="./private/key.js"></script>
 	<script>
 		//initialize variables
 		var center = [55.000, -6.5000];
@@ -22,7 +24,6 @@
 		var map_attribution = '  Sources: Esri, HERE, DeLorme, TomTom, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, MapmyIndia, © OpenStreetMap contributors, and the GIS User Community ';
 		var heritage_layer = 'http://services.arcgis.com/RhGiohBHzSBKt1MS/arcgis/rest/services/World_Heritage_Sites/FeatureServer/0';
 		var popup_template = '<h3>{name_en}</h3><p>{short_description_en}<br/><a href="javascript:viewphoto({latitude},{longitude},\'{name_search}\');">View photos</a></p>';
-		var flickr_url = 'http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?';
 		
 		//set center 
 		var map = L.map('map').setView(center, 10);
@@ -37,11 +38,8 @@
 		L.esri.featureLayer(heritage_layer, {
         	onEachFeature: function (feature, layer) {
         		//replacing apostrophe to prevent syntax error in viewphoto 
-        		feature.properties.name_search = feature.properties.name_en.replace("'"," ");
-        		//TODO replacing name encoding
-        		feature.properties.name_en = (feature.properties.name_en);
+        		feature.properties.name_search = feature.properties.name_en.replace("'","\\'");
         		
-        		console.log(feature.properties.name_search);
           		layer.bindPopup(L.Util.template(popup_template, feature.properties));
           		
         	}
@@ -49,20 +47,19 @@
       	
       	//load and show photos
       	function viewphoto (latitude, longitude, name){
-      		
+      		var radius = 25;
       		$("#images").empty();
-      		$.getJSON(flickr_url , {
-				format: "json",
-				tags: name,
-				tagmode: "any",
-			}).done(function( data ) {
-				
-				$.each( data.items, function( i, item ) {
-					console.log('img' + uneval(item));
-					$( "<img>" ).attr( "src", item.media.m ).appendTo( "#images" );
-					if ( i === 3 ) {
-						return false;
-					}
+      		//replacing strange charachter to get better searches results
+      		var regex = new RegExp('[^ ]*�[^ ]*', 'gi');
+			name = name.replace(regex, ' ');
+      		
+      		$.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key='+flickr_key+"&text="+name+"&lat="+latitude+"&lon="+longitude+"&radius="+radius+"&format=json&jsoncallback=?").done(function( data ) {
+				console.log(uneval(data.photos.photo));
+				$.each( data.photos.photo, function( i, item ) {
+					console.log('img' + src);
+					var src = 'http://farm'+item.farm+'.staticflickr.com/'+item.server+'/'+item.id+'_'+item.secret+'.jpg';
+					$( "<img>" ).attr( "src", src ).appendTo( "#images" );
+					
 			});
 		});
       		
